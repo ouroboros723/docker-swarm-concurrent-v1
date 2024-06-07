@@ -1,0 +1,122 @@
+version: "3"
+
+services:
+  gateway:
+    image: ghcr.io/totegamma/ccgateway:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - ${CONCRNT_CONF_DIR:-/opt/concurrent-v1/}etc/:/etc/concrnt/:ro
+    networks:
+      - external
+      - internal
+
+  api:
+    image: ghcr.io/totegamma/ccapi:latest
+    restart: always
+    volumes:
+      - ${CONCRNT_CONF_DIR:-/opt/concurrent-v1/}etc/:/etc/concrnt/:ro
+    expose:
+      - 8000
+    networks:
+      - external
+      - internal
+
+  webui:
+    image: ghcr.io/totegamma/ccwebui:latest
+    restart: always
+    expose:
+      - 80
+    networks:
+      - external
+      - internal
+
+  summary:
+    image: ghcr.io/rassi0429/url-summary:latest
+    restart: always
+    environment:
+      - PORT=8080
+    expose:
+      - 8080
+    networks:
+      - external
+
+#  apbridge:
+#    image: ghcr.io/totegamma/ccworld-ap-bridge:latest
+#    restart: always
+#    volumes:
+#      - ${CONCRNT_CONF_DIR:-/opt/concurrent-v1/}etc/config/:/etc/concurrent/:ro
+#    expose:
+#      - 8000
+#    networks:
+#      - internal
+
+#  mediaserver:
+#    image: ghcr.io/totegamma/cc-media-server:latest
+#    restart: always
+#    links:
+#      - db
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#    expose:
+#      - 8000
+#    environment:
+#      bucketName:
+#      endpointUrl:
+#      accessKeyId:
+#      accessKeySecret:
+#      publicBaseUrl:
+#      quota:
+#      forcePathStyle:
+#      db_dsn: "host=db user=postgres password=postgres dbname=concurrent"
+#    networks:
+#      - internal
+
+  db:
+    restart: always
+    image: postgres
+    healthcheck:
+      test: "pg_isready -U postgres"
+      interval: 5s
+      retries: 20
+    volumes:
+      - db-store:/var/lib/postgresql/data
+    environment:
+      - "POSTGRES_PASSWORD=postgres"
+      - "POSTGRES_DB=concurrent"
+    expose:
+      - 5432
+    networks:
+      - internal
+
+  redis:
+    restart: always
+    image: redis
+    volumes:
+      - redis-store:/data
+    healthcheck:
+      test: "redis-cli ping"
+      interval: 5s
+      retries: 20
+    expose:
+      - 6379
+    networks:
+      - internal
+
+  memcached:
+    restart: always
+    image: memcached
+    expose:
+      - 11211
+    networks:
+      - internal
+
+volumes:
+  db-store:
+  redis-store:
+networks:
+  external:
+  internal:
+    internal: true
