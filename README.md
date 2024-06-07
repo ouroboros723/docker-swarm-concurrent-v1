@@ -14,7 +14,8 @@
 │       ├── code-of-conduct.txt
 │       ├── register-template.json
 │       └── tos.txt
-└── swarm-stack.yml
+├── swarm-stack.yml
+└── docker-compose-portainer.yml
 ```
 
 ### README.md
@@ -36,6 +37,11 @@ swarm-stack.ymlファイル用の設定ファイルです。
   Swarm のstackを構成するファイルです。
   基本的に`docker-compose.yml`と書き方は同様ですが、Swarmモードの場合は一部使えないプロパティがある為注意してください。  
   ex. `depends_on:` など
+
+### docker-compose-portainer.yml
+  Swarm スタック管理 Webダッシュボード(portainer.io)用の構成ファイルです。(任意)  
+  `docker compose -f "docker-compose-portainer.yml" up -d --build` で構築・起動します。  
+  起動後、`http://<ホストIP>:9000`へアクセスするとダッシュボードが開きます。なお、初回起動時にログインユーザー情報の登録が求められるので、設定を行ってください。
 
 # Concurrentドメイン管理手引(本家より引用)
 
