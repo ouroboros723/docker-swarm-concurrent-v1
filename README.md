@@ -30,7 +30,7 @@ SwarmでworkerかつActiveになっている全ノードの同じパスに同じ
 swarm-stack.ymlファイル用の設定ファイルです。  
 現時点ではは下記項目が含まれます。  
 - CONCRNT_CONF_DIR  
-  configフォルダを配置したパスをフルパスで記述します。  
+  etcフォルダを配置したパスをフルパスで記述します。  
   ex. `/opt/concurrent-v1/etc/` となるように配置した場合は `/opt/concurrent-v1/`をパラメーターとして指定します。
 
 ### swarm-stack.yml  
